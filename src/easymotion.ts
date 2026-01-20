@@ -635,20 +635,21 @@ export class EasyMotionManager {
                                     const rect = rects[0];
                                     if (rect.top >= 0 && rect.top <= viewportBottom &&
                                         rect.left >= 0 && rect.left <= window.innerWidth) {
-                                    matches.push({
-                                        node: node,
-                                        index: index,
-                                        length: keyword.length,
-                                        rect: rect,
-                                        allRects: Array.from(rects),
-                                        pinyinMatch: {
-                                            matched: true,
-                                            type: 'direct',
-                                            pinyin: null,
-                                            originalText: text,
-                                            matchedIndices: [index]
-                                        }
-                                    });
+                                        matches.push({
+                                            node: node,
+                                            index: index,
+                                            length: keyword.length,
+                                            rect: rect,
+                                            allRects: Array.from(rects),
+                                            pinyinMatch: {
+                                                matched: true,
+                                                type: 'direct',
+                                                pinyin: null,
+                                                originalText: text,
+                                                matchedIndices: [index]
+                                            }
+                                        });
+                                    }
                                 }
                             } else {
                                 console.warn(`⚠️ 索引超出范围: ${index} + ${keyword.length} > ${text.length}`);
@@ -679,14 +680,15 @@ export class EasyMotionManager {
                                     const rect = rects[0];
                                     if (rect.top >= 0 && rect.top <= viewportBottom &&
                                         rect.left >= 0 && rect.left <= window.innerWidth) {
-                                    matches.push({
-                                        node: node,
-                                        index: matchIndex,
-                                        length: endPosition - matchIndex,
-                                        rect: rect,
-                                        allRects: Array.from(rects),
-                                        pinyinMatch: matchResult // 添加拼音匹配信息
-                                    });
+                                        matches.push({
+                                            node: node,
+                                            index: matchIndex,
+                                            length: endPosition - matchIndex,
+                                            rect: rect,
+                                            allRects: Array.from(rects),
+                                            pinyinMatch: matchResult // 添加拼音匹配信息
+                                        });
+                                    }
                                 }
                             } else {
                                 console.warn(`⚠️ 拼音索引超出范围: ${matchIndex} >= ${text.length}`);
@@ -737,12 +739,49 @@ export class EasyMotionManager {
         return matches;
     }
 
-  
-  
+    private showToast(message: string) {
+        const toast = document.createElement('div');
+        toast.textContent = message;
+        toast.style.cssText = `
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8); color: white; padding: 12px 24px;
+            border-radius: 8px; font-size: 14px; z-index: 2147483647;
+            transition: opacity 0.5s;
+        `;
+        document.body.appendChild(toast);
+        
         setTimeout(() => {
             toast.style.opacity = '0';
             setTimeout(() => toast.remove(), 500);
         }, 1500);
+    }
+
+    private generateLabels(count: number): string[] {
+        const labels: string[] = [];
+        const chars = this.characters;
+        
+        if (count <= chars.length) {
+            for (let i = 0; i < count; i++) {
+                labels.push(chars[i]);
+            }
+        } else {
+            for (let i = 0; i < count; i++) {
+                const first = Math.floor(i / chars.length);
+                const second = i % chars.length;
+                labels.push(chars[first] + chars[second]);
+            }
+        }
+        
+        return labels;
+    }
+
+    private updateVisuals() {
+        this.hints.forEach(hint => {
+            const isMatch = hint.label.startsWith(this.inputBuffer);
+            const isDimmed = !isMatch;
+            hint.marker.style.opacity = isDimmed ? '0.3' : '1';
+            hint.marker.style.transform = isDimmed ? 'scale(0.8)' : 'scale(1)';
+        });
     }
 
     private injectStyles() {
