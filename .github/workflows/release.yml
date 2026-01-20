@@ -29,25 +29,44 @@ jobs:
       - name: Build
         run: npm run build
       
-      - name: Get version
-        id: version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      - name: Get plugin name and version
+        id: info
+        run: |
+          PLUGIN_NAME=$(node -p "require('./package.json').name")
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "PLUGIN_NAME=$PLUGIN_NAME" >> $GITHUB_OUTPUT
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+      
+      - name: Create plugin package
+        run: |
+          mkdir -p ${{ steps.info.outputs.PLUGIN_NAME }}
+          cp -r dist ${{ steps.info.outputs.PLUGIN_NAME }}/
+          if [ -f icon.png ]; then cp icon.png ${{ steps.info.outputs.PLUGIN_NAME }}/; fi
+          if [ -f README.md ]; then cp README.md ${{ steps.info.outputs.PLUGIN_NAME }}/; fi
+          zip -r ${{ steps.info.outputs.PLUGIN_NAME }}.zip ${{ steps.info.outputs.PLUGIN_NAME }}
       
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: dist/index.js
+          files: ${{ steps.info.outputs.PLUGIN_NAME }}.zip
           body: |
-            ## Orca EasyMotion Plugin ${{ steps.version.outputs.VERSION }}
+            ## Orca EasyMotion Plugin v${{ steps.info.outputs.VERSION }}
             
             ### 安装方法
-            1. 下载 `index.js` 文件
-            2. 在 Orca 中加载该插件
+            1. 下载 `${{ steps.info.outputs.PLUGIN_NAME }}.zip` 文件
+            2. 解压到 Orca 的 `plugins` 目录
+            3. 在 Orca 中启用插件
             
             ### 使用方法
             - 双击 Alt 键激活 EasyMotion
             - 输入搜索词（支持中文、拼音、英文）
             - 按字母键跳转到对应位置
+            
+            ### 功能特性
+            - 🚀 双击 Alt 激活快速导航
+            - 🔍 智能搜索：支持中文、拼音、英文混合搜索
+            - 📝 拼音匹配：支持完整拼音、拼音首字母、部分拼音
+            - ⌨️ 快速跳转：字母标记，一键到达
           draft: false
           prerelease: false
         env:
