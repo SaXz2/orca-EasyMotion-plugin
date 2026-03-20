@@ -2,6 +2,8 @@
   "name": "orca-easymotion-plugin",
   "version": "1.0.0",
   "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
