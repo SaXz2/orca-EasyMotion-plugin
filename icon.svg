@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
+  <!-- Background circle -->
+  <circle cx="40" cy="40" r="38" fill="#1e1e2e" stroke="#89b4fa" stroke-width="2"/>
+  <!-- Magnifying glass circle -->
+  <circle cx="32" cy="32" r="14" fill="none" stroke="#cdd6f4" stroke-width="4" stroke-linecap="round"/>
+  <!-- Magnifying glass handle -->
+  <line x1="43" y1="43" x2="56" y2="56" stroke="#cdd6f4" stroke-width="4" stroke-linecap="round"/>
+  <!-- Motion lightning bolt -->
+  <polyline points="26,28 30,34 24,34 32,42" fill="none" stroke="#f38ba8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

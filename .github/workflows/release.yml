@@ -41,6 +41,9 @@ jobs:
         run: |
           mkdir -p ${{ steps.info.outputs.PLUGIN_NAME }}
           cp -r dist ${{ steps.info.outputs.PLUGIN_NAME }}/
+          cp package.json ${{ steps.info.outputs.PLUGIN_NAME }}/
+          cp LICENSE ${{ steps.info.outputs.PLUGIN_NAME }}/
+          if [ -f icon.svg ]; then cp icon.svg ${{ steps.info.outputs.PLUGIN_NAME }}/; fi
           if [ -f icon.png ]; then cp icon.png ${{ steps.info.outputs.PLUGIN_NAME }}/; fi
           if [ -f README.md ]; then cp README.md ${{ steps.info.outputs.PLUGIN_NAME }}/; fi
           zip -r ${{ steps.info.outputs.PLUGIN_NAME }}.zip ${{ steps.info.outputs.PLUGIN_NAME }}
